@@ -3,6 +3,7 @@ import BackButton from '../components/BackButton.jsx';
 import Spinner from '../components/Spinner.jsx';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useSnackbar } from 'notistack';
 
 export default function EditProduct() {
     const [name, setName] = useState('');
@@ -12,6 +13,8 @@ export default function EditProduct() {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const { id } = useParams();
+    const { enqueueSnackbar } = useSnackbar();
+
     useEffect(() => {
         setLoading(true);
         axios
@@ -41,11 +44,13 @@ export default function EditProduct() {
             .put(`http://localhost:5555/products/${id}`, data)
             .then(() => {
                 setLoading(false);
+                enqueueSnackbar('Product edited successfully', { variant: 'success' })
                 navigate('/');
             })
             .catch((error) => {
                 setLoading(false);
-                alert('An error happened. Please check the console');
+                // alert('An error happened. Please check the console');
+                enqueueSnackbar('Error', { variant: 'error' })
                 console.log(error);
             });
     };
